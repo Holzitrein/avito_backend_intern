@@ -6,7 +6,14 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_DB: "avito"
+      POSTGRES_USER: "avito"
+      POSTGRES_PASSWORD: "avito"
+    volumes:
+      - ./init/sql:/docker-entrypoint-initdb.d
+      - ./database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   golang:
     build:
