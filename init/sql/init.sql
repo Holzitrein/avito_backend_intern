@@ -1,44 +1,45 @@
-SELECT 'CREATE DATABASE avito_db'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'avito_db')\gexec
-SET names 'utf8';
-
-
 CREATE TABLE Users
 (
- IdUser  int NOT NULL,
- Balance money NOT NULL,
- Reserve money NOT NULL,
- CONSTRAINT PK_1 PRIMARY KEY ( IdUser )
+ idUser  int NOT NULL,
+ balance DECIMAL(18,2) NOT NULL,
+ reserve DECIMAL(18,2) NOT NULL,
+ CONSTRAINT PK_Users PRIMARY KEY ( idUser )
 );
 
 CREATE TABLE History_add
 (
- IdAdd  int8range NOT NULL,
- Amount money NOT NULL,
- IdUser int NOT NULL,
- TimeAdd   timestamp NOT NULL,
- Note   varchar(50) NOT NULL,
- CONSTRAINT PK_2 PRIMARY KEY ( IdAdd ),
- CONSTRAINT FK_1 FOREIGN KEY ( IdUser ) REFERENCES Users ( IdUser )
+ idAdd  SERIAL,
+ amount DECIMAL(18,2) NOT NULL,
+ idUser int NOT NULL,
+ timeAdd   timestamp NOT NULL,
+ note   varchar(50) NOT NULL,
+ CONSTRAINT PK_IdAdd PRIMARY KEY ( idAdd ),
+ FOREIGN KEY ( idUser ) REFERENCES Users ( idUser )
 );
 
 
 CREATE TABLE Services
 (
- IdService int NOT NULL,
- Name      varchar(50) NOT NULL,
- CONSTRAINT PK_3 PRIMARY KEY ( IdService )
+ idService int NOT NULL,
+ nameSer      varchar(50) NOT NULL,
+ CONSTRAINT PK_IdService PRIMARY KEY ( idService )
 );
 
 CREATE TABLE Orders
 (
- IdOrder   int8range NOT NULL,
- IdUser    int NOT NULL,
- IdService int NOT NULL,
- Price     money NOT NULL,
- Created   timestamp NOT NULL,
- StatusOrder int NOT NULL,
- CONSTRAINT PK_4 PRIMARY KEY ( IdOrder ),
- CONSTRAINT FK_2 FOREIGN KEY ( IdUser ) REFERENCES Users ( IdUser ),
- CONSTRAINT FK_3 FOREIGN KEY ( IdService ) REFERENCES Services ( IdService )
+ idOrder   int8range NOT NULL,
+ idUser    int NOT NULL,
+ idService int NOT NULL,
+ price     DECIMAL(18,2) NOT NULL,
+ created   timestamp NOT NULL,
+ statusOrder int NOT NULL,
+ CONSTRAINT PK_IdOrder PRIMARY KEY ( idOrder ),
+ FOREIGN KEY ( idUser ) REFERENCES Users ( idUser ),
+ FOREIGN KEY ( idService ) REFERENCES Services ( idService )
+);
+
+INSERT INTO users (iduser,balance,reserve) VALUES (
+  '2',
+  '250',
+  '0'
 );

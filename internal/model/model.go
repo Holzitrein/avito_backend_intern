@@ -1,0 +1,18 @@
+package model
+
+type BalanceGet struct {
+	UserId int `json:"userId"`
+}
+
+type BalanceGetReturn struct {
+	Balance float32 `json:"balance"`
+}
+
+type BalanceAdd struct {
+	UserId int     `json:"userId"`
+	Money  float32 `json:"money"`
+}
+
+type BalanceAddReturn struct {
+	Status string `json:"status"`
+}
