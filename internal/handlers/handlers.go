@@ -3,5 +3,6 @@ package handlers
 import "github.com/gin-gonic/gin"
 
 func Hello(c *gin.Context) {
-	c.String(200, "Hello")
+	some := c.Param("id")
+	c.String(200, some)
 }

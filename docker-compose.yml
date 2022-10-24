@@ -20,6 +20,6 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 8000:80
+      - 8000:8080
     links:
       - database
