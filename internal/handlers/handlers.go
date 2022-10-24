@@ -22,11 +22,11 @@ func TransferBalance(c *gin.Context) {
 }
 
 func AddBalance(c *gin.Context) {
-	var requestBody model.BalanceGet
+	var requestBody model.BalanceAdd
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.String(400, "error")
 	}
-	reply := database.GetBalanceDb(requestBody)
+	reply := database.AddBalanceDb(requestBody)
 	c.JSON(200, reply)
 }
 

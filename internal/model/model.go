@@ -11,6 +11,7 @@ type BalanceGetReturn struct {
 type BalanceAdd struct {
 	UserId int     `json:"userId"`
 	Money  float32 `json:"money"`
+	Note   string  `json:"note"`
 }
 
 type BalanceAddReturn struct {
