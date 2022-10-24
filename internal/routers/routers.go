@@ -7,8 +7,8 @@ import (
 )
 
 func Routes(route *gin.Engine) {
-	route.GET("/user/:id", handlers.GetBalance) //получение баланса
-	//route.POST("/user/:id", handlers.AddBalance)      //добавление денег на баланс
+	route.GET("/user", handlers.GetBalance)  //получение баланса
+	route.POST("/user", handlers.AddBalance) //добавление денег на баланс
 	//route.POST("/user/:id", handlers.TransferBalance) //перевод между пользователями
 	//route.POST("/user/:id", handlers.ReserveBalance)  //Резервирование денег
 	//route.POST("/user/:id", handlers.ConformBalnce)   //Признание выручки

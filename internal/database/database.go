@@ -1,13 +1,25 @@
 package database
 
 import (
-	"database/sql"
-	"log"
-	"time"
+	"avito_balance/internal/model"
+	"context"
+
+	"github.com/jackc/pgx/v5"
 )
 
-func Check(db *sql.DB) {
-	time.Sleep(30 * time.Second)
-	log.Println("rows")
-	log.Println(db.Ping())
+var db *pgx.Conn
+
+func SetDb(db_new *pgx.Conn) {
+	db = db_new
+}
+
+func GetBalanceDb(data model.BalanceGet) model.BalanceGetReturn {
+	var money float32
+	var returnData model.BalanceGetReturn
+	err := db.QueryRow(context.Background(), "select balance from Users where idUser=$1", data.UserId).Scan(&money)
+	if err != nil {
+		panic("getBalance Erorr")
+	}
+	returnData.Balance = money
+	return returnData
 }

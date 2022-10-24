@@ -1,10 +1,19 @@
 package handlers
 
-import "github.com/gin-gonic/gin"
+import (
+	"avito_balance/internal/database"
+	"avito_balance/internal/model"
+
+	"github.com/gin-gonic/gin"
+)
 
 func GetBalance(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.BalanceGet
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.GetBalanceDb(requestBody)
+	c.JSON(200, reply)
 }
 
 func TransferBalance(c *gin.Context) {
@@ -13,8 +22,12 @@ func TransferBalance(c *gin.Context) {
 }
 
 func AddBalance(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.BalanceGet
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.GetBalanceDb(requestBody)
+	c.JSON(200, reply)
 }
 
 func ReserveBalance(c *gin.Context) {
