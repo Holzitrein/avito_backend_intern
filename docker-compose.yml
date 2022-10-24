@@ -11,7 +11,6 @@ services:
       POSTGRES_PASSWORD: "avito"
     volumes:
       - ./init/sql:/docker-entrypoint-initdb.d
-      - ./database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 

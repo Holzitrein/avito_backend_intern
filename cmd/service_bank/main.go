@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"avito_balance/internal/handlers"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Printf("Lol")
+	router := gin.Default()
+	router.GET("/", handlers.Hello)
+	router.Run()
 }
