@@ -61,6 +61,11 @@ func ReportService(c *gin.Context) {
 	c.JSON(200, reply)
 }
 
+func ReportServiceFile(c *gin.Context) {
+	url := c.Param("file")
+	c.File("internal/database/csv/" + url)
+}
+
 func ReportOperation(c *gin.Context) {
 	some := c.Param("id")
 	c.String(200, some)
