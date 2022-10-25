@@ -40,8 +40,12 @@ func ReserveBalance(c *gin.Context) {
 }
 
 func ConformBalnce(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.ReserveConfirm
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.ConfirmBalanceDb(requestBody)
+	c.JSON(200, reply)
 }
 
 func ReportService(c *gin.Context) {

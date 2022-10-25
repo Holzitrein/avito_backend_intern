@@ -78,13 +78,59 @@ func ReserveBalanceDb(data model.ReserveCreate) model.ReserveCreateReturn {
 		return returnData
 	}
 	defer tx.Rollback(context.Background())
-	tx.Exec(context.Background(), "UPDATE users SET reserve=reserve+$1", data.Price)
+	tx.Exec(context.Background(), "UPDATE users SET reserve=reserve+$1 WHERE idUser = $2", data.Price, data.UserId)
 	response := "reserve"
 	tx.Exec(context.Background(), "INSERT INTO orders (idorder,iduser,idservice,price,created,statusorder) VALUES ($1, $2, $3, $4, $5, $6)", data.IdOrder, data.UserId, data.IdService, data.Price, time.Now(), response)
 	err = tx.Commit(context.Background())
 	if err != nil {
 		returnData.Status = "Commit error"
 		return returnData
+	}
+	returnData.Status = "Successfully"
+	return returnData
+}
+
+func ConfirmBalanceDb(data model.ReserveConfirm) model.ReserveCreateReturn {
+	var returnData model.ReserveCreateReturn
+	var isExists bool
+	status := "reserve"
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM orders WHERE idorder = $1 AND iduser = $2 AND idservice = $3 AND price = $4 AND statusorder = $5)", data.IdOrder, data.UserId, data.IdService, data.Price, status).Scan(&isExists)
+	if !(isExists) {
+		returnData.Status = "Order not found"
+		return returnData
+	}
+	if data.Command == "approved" {
+		tx, err := db.Begin(context.Background())
+		if err != nil {
+			returnData.Status = "Commit error"
+			return returnData
+		}
+		defer tx.Rollback(context.Background())
+		tx.Exec(context.Background(), "UPDATE users SET reserve = reserve - $2 WHERE idUser = $1", data.UserId, data.Price)
+		tx.Exec(context.Background(), "UPDATE users SET balance = balance - $2 WHERE idUser = $1", data.UserId, data.Price)
+		response := "approved"
+		tx.Exec(context.Background(), "UPDATE orders SET statusorder = $1 WHERE idorder = $2", response, data.IdOrder)
+		err = tx.Commit(context.Background())
+		if err != nil {
+			returnData.Status = "Commit error"
+			return returnData
+		}
+	}
+	if data.Command == "cancel" {
+		tx, err := db.Begin(context.Background())
+		if err != nil {
+			returnData.Status = "Commit error"
+			return returnData
+		}
+		defer tx.Rollback(context.Background())
+		tx.Exec(context.Background(), "UPDATE users SET reserve = reserve - $2 WHERE idUser = $1", data.UserId, data.Price)
+		response := "cancel"
+		tx.Exec(context.Background(), "UPDATE orders SET statusorder = $1 WHERE idorder = $2", response, data.IdOrder)
+		err = tx.Commit(context.Background())
+		if err != nil {
+			returnData.Status = "Commit error"
+			return returnData
+		}
 	}
 	returnData.Status = "Successfully"
 	return returnData

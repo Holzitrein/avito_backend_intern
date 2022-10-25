@@ -11,7 +11,7 @@ func Routes(route *gin.Engine) {
 	route.POST("/user", handlers.AddBalance) //добавление денег на баланс
 	//route.POST("/user/:id", handlers.TransferBalance) //перевод между пользователями
 	route.POST("/order/create", handlers.ReserveBalance) //Резервирование денег
-	//route.POST("/user/:id", handlers.ConformBalnce)   //Признание выручки
+	route.POST("/order/", handlers.ConformBalnce)        //Признание выручки или отклонение заказа
 	//route.GET("/user/:id", handlers.ReportService)    //Отчёт по услуге за n период
 	//route.GET("/user/:id", handlers.ReportOperation)  //Отчёт по операциям
 }

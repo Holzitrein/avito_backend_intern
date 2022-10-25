@@ -25,6 +25,14 @@ type ReserveCreate struct {
 	Price     float32 `json:"price"`
 }
 
+type ReserveConfirm struct {
+	UserId    int     `json:"userId"`
+	IdService int     `json:"idService"`
+	IdOrder   int     `json:"idOrder"`
+	Price     float32 `json:"price"`
+	Command   string  `json:"cmd"`
+}
+
 type ReserveCreateReturn struct {
 	Status string `json:"status"`
 }
