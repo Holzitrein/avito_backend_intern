@@ -17,3 +17,14 @@ type BalanceAdd struct {
 type BalanceAddReturn struct {
 	Status string `json:"status"`
 }
+
+type ReserveCreate struct {
+	UserId    int     `json:"userId"`
+	IdService int     `json:"idService"`
+	IdOrder   int     `json:"idOrder"`
+	Price     float32 `json:"price"`
+}
+
+type ReserveCreateReturn struct {
+	Status string `json:"status"`
+}

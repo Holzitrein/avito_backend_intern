@@ -27,15 +27,30 @@ CREATE TABLE Services
 
 CREATE TABLE Orders
 (
- idOrder   int8range NOT NULL,
+ idOrder   int NOT NULL,
  idUser    int NOT NULL,
  idService int NOT NULL,
  price     DECIMAL(18,2) NOT NULL,
  created   timestamp NOT NULL,
- statusOrder int NOT NULL,
+ statusOrder varchar(20) NOT NULL,
  CONSTRAINT PK_IdOrder PRIMARY KEY ( idOrder ),
  FOREIGN KEY ( idUser ) REFERENCES Users ( idUser ),
  FOREIGN KEY ( idService ) REFERENCES Services ( idService )
+);
+
+INSERT INTO services (idService,nameSer) VALUES (
+  '0',
+  'Услуга №1'
+);
+
+INSERT INTO services (idService,nameSer) VALUES (
+  '1',
+  'Услуга №2'
+);
+
+INSERT INTO services (idService,nameSer) VALUES (
+  '2',
+  'Услуга №3'
 );
 
 INSERT INTO users (iduser,balance,reserve) VALUES (

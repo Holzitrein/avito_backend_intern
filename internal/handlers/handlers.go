@@ -31,8 +31,12 @@ func AddBalance(c *gin.Context) {
 }
 
 func ReserveBalance(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.ReserveCreate
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.ReserveBalanceDb(requestBody)
+	c.JSON(200, reply)
 }
 
 func ConformBalnce(c *gin.Context) {

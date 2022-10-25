@@ -44,3 +44,48 @@ func AddBalanceDb(data model.BalanceAdd) model.BalanceAddReturn {
 	returnData.Status = "true"
 	return returnData
 }
+
+func ReserveBalanceDb(data model.ReserveCreate) model.ReserveCreateReturn {
+	var returnData model.ReserveCreateReturn
+	var isExists bool
+	var isExists_2 bool
+	var balance float32
+	var reserve float32
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM users WHERE idUser = $1)", data.UserId).Scan(&isExists)
+	if !(isExists) {
+		returnData.Status = "User not found"
+		return returnData
+	}
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM services WHERE idService = $1)", data.IdService).Scan(&isExists_2)
+	if !(isExists_2) {
+		returnData.Status = "Service not found"
+		return returnData
+	}
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM orders WHERE idorder = $1)", data.IdOrder).Scan(&isExists_2)
+	if isExists_2 {
+		returnData.Status = "This order already exists"
+		return returnData
+	}
+	db.QueryRow(context.Background(), "SELECT balance, reserve FROM users WHERE idUser = $1", data.UserId).Scan(&balance, &reserve)
+
+	if (balance - reserve - data.Price) < 0 {
+		returnData.Status = "not enough money"
+		return returnData
+	}
+	tx, err := db.Begin(context.Background())
+	if err != nil {
+		returnData.Status = "Commit error"
+		return returnData
+	}
+	defer tx.Rollback(context.Background())
+	tx.Exec(context.Background(), "UPDATE users SET reserve=reserve+$1", data.Price)
+	response := "reserve"
+	tx.Exec(context.Background(), "INSERT INTO orders (idorder,iduser,idservice,price,created,statusorder) VALUES ($1, $2, $3, $4, $5, $6)", data.IdOrder, data.UserId, data.IdService, data.Price, time.Now(), response)
+	err = tx.Commit(context.Background())
+	if err != nil {
+		returnData.Status = "Commit error"
+		return returnData
+	}
+	returnData.Status = "Successfully"
+	return returnData
+}
