@@ -3,6 +3,12 @@ package database
 import (
 	"avito_balance/internal/model"
 	"context"
+	"encoding/csv"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -172,5 +178,70 @@ func TrunsferBalanceBd(data model.TransferBalanceUser) model.TransferBalanceUser
 		return returnData
 	}
 	returnData.Status = "Successfully"
+	return returnData
+}
+
+func ReportServiceBd(data model.ReportServiceStruct) model.ReportServiceStructReturn {
+	var returnData model.ReportServiceStructReturn
+	year := strings.Split(data.Date, "-")[0]
+	year_int, _ := strconv.Atoi(year)
+	mounth := strings.Split(data.Date, "-")[1]
+	mounth_int, _ := strconv.Atoi(mounth)
+	date_from := time.Date(year_int, time.Month(mounth_int), 1, 0, 0, 0, 0, time.UTC)
+	date_to := date_from.AddDate(0, 1, -1)
+
+	rows, err := db.Query(context.Background(), "SELECT idservice, nameser FROM services")
+	if err != nil {
+		log.Println("Error find servises ")
+		log.Println(err)
+	}
+
+	var idSer int
+	var nameSer string
+	var money float32
+	data_final := [][]string{{"Услуга", "Доход"}}
+	nameFile := "report_" + data.Date + ".csv"
+	nameFile_os := "internal/database/csv/" + nameFile
+	status := "approved"
+	f, _ := os.Create(nameFile_os)
+	defer f.Close()
+	var num_rows = []model.ServiceName{}
+	for rows.Next() {
+		err := rows.Scan(&idSer, &nameSer)
+		if err != nil {
+			log.Fatal("1")
+		}
+		num_rows = append(num_rows, model.ServiceName{Id: idSer, Name: nameSer})
+
+	}
+	rows.Close()
+	for i := 0; i < len(num_rows); i++ {
+		rows_final, err := db.Query(context.Background(), "SELECT price FROM orders WHERE idService =  $1 AND statusOrder = $2 AND created > $3 AND created < $4",
+			num_rows[i].Id, status, date_from, date_to)
+		if err != nil {
+			log.Println(err)
+			log.Println("err")
+		}
+		var final_money float32
+		final_money = 0
+		for rows_final.Next() {
+			err := rows_final.Scan(&money)
+			log.Println(money)
+			final_money = final_money + money
+			if err != nil {
+				log.Fatal("3")
+			}
+		}
+		s := fmt.Sprintf("%v", final_money)
+		data_temp := []string{num_rows[i].Name, s}
+		data_final = append(data_final, data_temp)
+		rows_final.Close()
+	}
+
+	w := csv.NewWriter(f)
+
+	w.WriteAll(data_final)
+	log.Print(data_final)
+	returnData.Url = "localhost:8000/csv/" + nameFile
 	return returnData
 }

@@ -48,10 +48,14 @@ type TransferBalanceUserReturn struct {
 }
 
 type ReportServiceStruct struct {
-	IdService int    `json:"idService"`
-	Date      string `json:"date"`
+	Date string `json:"date"`
 }
 
 type ReportServiceStructReturn struct {
 	Url string `json:"url"`
+}
+
+type ServiceName struct {
+	Id   int
+	Name string
 }
