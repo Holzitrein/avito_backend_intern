@@ -135,3 +135,42 @@ func ConfirmBalanceDb(data model.ReserveConfirm) model.ReserveCreateReturn {
 	returnData.Status = "Successfully"
 	return returnData
 }
+
+func TrunsferBalanceBd(data model.TransferBalanceUser) model.TransferBalanceUserReturn {
+	var returnData model.TransferBalanceUserReturn
+	var isExists bool
+	var balance float32
+	var reserve float32
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM users WHERE iduser = $1)", data.UserId).Scan(&isExists)
+	if !(isExists) {
+		returnData.Status = "User not found"
+		return returnData
+	}
+	db.QueryRow(context.Background(), "SELECT EXISTS (SELECT * FROM users WHERE iduser = $1)", data.UserId2).Scan(&isExists)
+	if !(isExists) {
+		returnData.Status = "User not found"
+		return returnData
+	}
+	db.QueryRow(context.Background(), "SELECT balance, reserve FROM users WHERE idUser = $1", data.UserId).Scan(&balance, &reserve)
+	if (balance - reserve - data.Money) < 0 {
+		returnData.Status = "not enough money"
+		return returnData
+	}
+
+	tx, err := db.Begin(context.Background())
+	if err != nil {
+		returnData.Status = "Commit error"
+		return returnData
+	}
+	defer tx.Rollback(context.Background())
+
+	tx.Exec(context.Background(), "UPDATE users SET balance = balance - $1 WHERE idUser = $2", data.Money, data.UserId)
+	tx.Exec(context.Background(), "UPDATE users SET balance = balance + $1 WHERE idUser = $2", data.Money, data.UserId2)
+	err = tx.Commit(context.Background())
+	if err != nil {
+		returnData.Status = "Commit error"
+		return returnData
+	}
+	returnData.Status = "Successfully"
+	return returnData
+}

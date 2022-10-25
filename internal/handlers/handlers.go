@@ -17,8 +17,12 @@ func GetBalance(c *gin.Context) {
 }
 
 func TransferBalance(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.TransferBalanceUser
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.TrunsferBalanceBd(requestBody)
+	c.JSON(200, reply)
 }
 
 func AddBalance(c *gin.Context) {
@@ -49,8 +53,12 @@ func ConformBalnce(c *gin.Context) {
 }
 
 func ReportService(c *gin.Context) {
-	some := c.Param("id")
-	c.String(200, some)
+	var requestBody model.ReportServiceStruct
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.String(400, "error")
+	}
+	reply := database.ReportServiceBd(requestBody)
+	c.JSON(200, reply)
 }
 
 func ReportOperation(c *gin.Context) {

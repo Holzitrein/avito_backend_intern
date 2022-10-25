@@ -36,3 +36,22 @@ type ReserveConfirm struct {
 type ReserveCreateReturn struct {
 	Status string `json:"status"`
 }
+
+type TransferBalanceUser struct {
+	UserId  int     `json:"userId"`
+	UserId2 int     `json:"userId2"`
+	Money   float32 `json:"money"`
+}
+
+type TransferBalanceUserReturn struct {
+	Status string `json:"status"`
+}
+
+type ReportServiceStruct struct {
+	IdService int    `json:"idService"`
+	Date      string `json:"date"`
+}
+
+type ReportServiceStructReturn struct {
+	Url string `json:"url"`
+}
