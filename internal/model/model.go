@@ -59,3 +59,8 @@ type ServiceName struct {
 	Id   int
 	Name string
 }
+type ReportOperationRequest struct {
+	Iduser int    `json:"iduser"`
+	Page   int    `json:"page"`
+	Sort   string `json:"sort"`
+}

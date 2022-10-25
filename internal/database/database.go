@@ -172,6 +172,9 @@ func TrunsferBalanceBd(data model.TransferBalanceUser) model.TransferBalanceUser
 
 	tx.Exec(context.Background(), "UPDATE users SET balance = balance - $1 WHERE idUser = $2", data.Money, data.UserId)
 	tx.Exec(context.Background(), "UPDATE users SET balance = balance + $1 WHERE idUser = $2", data.Money, data.UserId2)
+	mes := "from user: " + strconv.Itoa(data.UserId)
+	tx.Exec(context.Background(), "INSERT INTO History_add (amount, idUser, timeAdd, note) VALUES ($1, $2, $3, $4)",
+		data.Money, data.UserId2, time.Now(), mes)
 	err = tx.Commit(context.Background())
 	if err != nil {
 		returnData.Status = "Commit error"
@@ -219,14 +222,12 @@ func ReportServiceBd(data model.ReportServiceStruct) model.ReportServiceStructRe
 		rows_final, err := db.Query(context.Background(), "SELECT price FROM orders WHERE idService =  $1 AND statusOrder = $2 AND created > $3 AND created < $4",
 			num_rows[i].Id, status, date_from, date_to)
 		if err != nil {
-			log.Println(err)
 			log.Println("err")
 		}
 		var final_money float32
 		final_money = 0
 		for rows_final.Next() {
 			err := rows_final.Scan(&money)
-			log.Println(money)
 			final_money = final_money + money
 			if err != nil {
 				log.Fatal("3")
@@ -241,7 +242,6 @@ func ReportServiceBd(data model.ReportServiceStruct) model.ReportServiceStructRe
 	w := csv.NewWriter(f)
 
 	w.WriteAll(data_final)
-	log.Print(data_final)
 	returnData.Url = "localhost:8000/csv/" + nameFile
 	return returnData
 }
