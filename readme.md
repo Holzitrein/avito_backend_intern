@@ -1,7 +1,7 @@
 #  **Тестовое задание на позицию стажёра-бэкендера**
 ## Запуск
 ```
-docker compose pull
+docker-compose pull
 docker-compose up
 ```
 ## Реализация работы программы
