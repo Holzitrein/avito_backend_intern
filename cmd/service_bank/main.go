@@ -6,23 +6,19 @@ import (
 	"context"
 	"os"
 
-	_ "avito_balance/docs"
+	//_ "avito_balance/docs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
-// @title       REST server for balance
-// @version     1.0
-// @description Task from avito for backend intern
-
+// @title        REST server for balance
+// @version      2.0
+// @description  Task from avito for backend intern
 // @contact.name Andreychuk Andrew
 // @contact.url  https://vk.com/holzitrein
-
-// @host     localhost:8000
-// @BasePath /
+// @host         localhost:8000
+// @BasePath     /
 
 func main() {
 	router := gin.Default()
@@ -36,6 +32,6 @@ func main() {
 	database.SetDb(conn)
 
 	defer conn.Close(context.Background())
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
 }

@@ -53,7 +53,7 @@ func TransferBalance(c *gin.Context) {
 	}
 }
 
-// @Summary     Transfer balance
+// @Summary     add balance
 // @Description Add money to user's balance
 // @Tags        operation for user balance
 // @Accept      json
