@@ -1,0 +1,11 @@
+basePath: /
+host: localhost:8000
+info:
+  contact:
+    name: Andreychuk Andrew
+    url: https://vk.com/holzitrein
+  description: Task from avito for backend intern
+  title: REST server for balance
+  version: "1.0"
+paths: {}
+swagger: "2.0"

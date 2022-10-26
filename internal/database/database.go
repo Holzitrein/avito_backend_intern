@@ -265,7 +265,7 @@ func ReportOperationBd(data model.ReportOperationRequest) model.ReportOperationR
 	}
 	rows.Close()
 	skip := data.Rows * (data.Page - 1)
-	rows_fin, err_2 := db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY $3 OFFSET $4 LIMIT $5",
+	rows_fin, err_2 := db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY $3 ASC OFFSET $4 LIMIT $5",
 		data.Iduser, "approved", data.Sort, skip, data.Rows)
 	if err_2 != nil {
 		log.Println("Error find orders")
