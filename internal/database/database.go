@@ -265,12 +265,41 @@ func ReportOperationBd(data model.ReportOperationRequest) model.ReportOperationR
 	}
 	rows.Close()
 	skip := data.Rows * (data.Page - 1)
-	rows_fin, err_2 := db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY $3 ASC OFFSET $4 LIMIT $5",
-		data.Iduser, "approved", data.Sort, skip, data.Rows)
-	if err_2 != nil {
-		log.Println("Error find orders")
-		log.Println(err)
+	var rows_fin pgx.Rows
+	var err_2 error
+	if data.Sort == "price_up" {
+		rows_fin, err_2 = db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY price ASC OFFSET $3 LIMIT $4",
+			data.Iduser, "approved", skip, data.Rows)
+		if err_2 != nil {
+			log.Println("Error find orders")
+			log.Println(err)
+		}
 	}
+	if data.Sort == "price_down" {
+		rows_fin, err_2 = db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY price DESC OFFSET $3 LIMIT $4",
+			data.Iduser, "approved", skip, data.Rows)
+		if err_2 != nil {
+			log.Println("Error find orders")
+			log.Println(err)
+		}
+	}
+	if data.Sort == "created_up" {
+		rows_fin, err_2 = db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY created ASC OFFSET $3 LIMIT $4",
+			data.Iduser, "approved", skip, data.Rows)
+		if err_2 != nil {
+			log.Println("Error find orders")
+			log.Println(err)
+		}
+	}
+	if data.Sort == "created_down" {
+		rows_fin, err_2 = db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY created DESC OFFSET $3 LIMIT $4",
+			data.Iduser, "approved", skip, data.Rows)
+		if err_2 != nil {
+			log.Println("Error find orders")
+			log.Println(err)
+		}
+	}
+
 	var forReturn model.ReportOperationRequestTemp
 	var money float32
 	var created time.Time

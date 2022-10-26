@@ -62,7 +62,7 @@ func ReportOperationValidate(data model.ReportOperationRequest) bool {
 	if data.Page < 1 || data.Rows < 1 {
 		return false
 	}
-	if data.Sort != "created" && data.Sort != "price" {
+	if data.Sort != "created_up" && data.Sort != "price_up" && data.Sort != "created_down" && data.Sort != "price_down" {
 		return false
 	}
 	return true
