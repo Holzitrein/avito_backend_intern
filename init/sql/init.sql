@@ -53,6 +53,8 @@ INSERT INTO services (idService,nameSer) VALUES (
   'Услуга №3'
 );
 
+
+
 INSERT INTO users (iduser,balance,reserve) VALUES (
   '2',
   '250',

@@ -245,3 +245,47 @@ func ReportServiceBd(data model.ReportServiceStruct) model.ReportServiceStructRe
 	returnData.Url = "localhost:8000/csv/" + nameFile
 	return returnData
 }
+
+func ReportOperationBd(data model.ReportOperationRequest) model.ReportOperationRequestReturn {
+	rows, err := db.Query(context.Background(), "SELECT idservice, nameser FROM services")
+	if err != nil {
+		log.Println("Error find servises ")
+		log.Println(err)
+	}
+	var idSer int
+	var nameSer string
+	var num_rows = []model.ServiceName{}
+	for rows.Next() {
+		err := rows.Scan(&idSer, &nameSer)
+		if err != nil {
+			log.Fatal("1")
+		}
+		num_rows = append(num_rows, model.ServiceName{Id: idSer, Name: nameSer})
+
+	}
+	rows.Close()
+	skip := data.Rows * (data.Page - 1)
+	rows_fin, err_2 := db.Query(context.Background(), "SELECT idService, price, created FROM orders WHERE iduser = $1 AND statusOrder = $2 ORDER BY $3 OFFSET $4 LIMIT $5",
+		data.Iduser, "approved", data.Sort, skip, data.Rows)
+	if err_2 != nil {
+		log.Println("Error find orders")
+		log.Println(err)
+	}
+	var forReturn model.ReportOperationRequestTemp
+	var money float32
+	var created time.Time
+	var returnData model.ReportOperationRequestReturn
+	for rows_fin.Next() {
+		err := rows_fin.Scan(&idSer, &money, &created)
+		if err != nil {
+			log.Print("1")
+			log.Print(err)
+		}
+		forReturn.Time = created.String()
+		forReturn.Money = money
+		forReturn.Service = num_rows[idSer].Name
+		returnData.Orders = append(returnData.Orders, forReturn)
+	}
+	rows_fin.Close()
+	return returnData
+}

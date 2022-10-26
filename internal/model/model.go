@@ -62,5 +62,19 @@ type ServiceName struct {
 type ReportOperationRequest struct {
 	Iduser int    `json:"iduser"`
 	Page   int    `json:"page"`
+	Rows   int    `json:"rows"`
 	Sort   string `json:"sort"`
+}
+
+type ReportOperationRequestTemp struct {
+	Time    string  `json:"time"`
+	Money   float32 `json:"money"`
+	Service string  `json:"service"`
+}
+
+type ReportOperationRequestReturn struct {
+	Orders []ReportOperationRequestTemp
+}
+type ErrorReq struct {
+	ErrorMes string `json:"error"`
 }
